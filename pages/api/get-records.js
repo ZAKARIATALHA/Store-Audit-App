@@ -1,4 +1,4 @@
-import { getDatabase } from '@/lib/db';
+import { initializeStorage, getAllAudits } from '@/lib/storage';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') {
@@ -6,8 +6,8 @@ export default function handler(req, res) {
   }
 
   try {
-    const db = getDatabase();
-    const records = db.prepare('SELECT * FROM audits ORDER BY createdAt DESC').all();
+    initializeStorage();
+    const records = getAllAudits();
     return res.status(200).json({ records });
   } catch (error) {
     console.error('Error fetching records:', error);

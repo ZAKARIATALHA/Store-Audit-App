@@ -1,4 +1,4 @@
-import { getDatabase } from '@/lib/db';
+import { initializeStorage, saveAudit } from '@/lib/storage';
 import { uploadImage } from '@/lib/googleDrive';
 
 export const config = {
@@ -15,6 +15,8 @@ async function handler(req, res) {
   }
 
   try {
+    initializeStorage();
+
     const { store, sku, brand, category, auditType, status, comments, imageData } = req.body;
 
     // Validate required fields
@@ -27,7 +29,8 @@ async function handler(req, res) {
     // Upload image if provided
     if (imageData) {
       try {
-        const buffer = Buffer.from(imageData.split(',')[1], 'base64');
+        const base64Data = imageData.includes(',') ? imageData.split(',')[1] : imageData;
+        const buffer = Buffer.from(base64Data, 'base64');
         const fileName = `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
         imageUrl = await uploadImage(buffer, fileName);
       } catch (uploadError) {
@@ -35,18 +38,12 @@ async function handler(req, res) {
       }
     }
 
-    // Save to database
-    const db = getDatabase();
-    const stmt = db.prepare(`
-      INSERT INTO audits (store, sku, brand, category, auditType, status, comments, imageUrl)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(store, sku, brand, category, auditType, status, comments || '', imageUrl);
+    // Save to storage
+    const id = saveAudit(store, sku, brand, category, auditType, status, comments || '', imageUrl);
 
     return res.status(200).json({
       success: true,
-      id: result.lastInsertRowid,
+      id: id,
       imageUrl: imageUrl,
     });
   } catch (error) {

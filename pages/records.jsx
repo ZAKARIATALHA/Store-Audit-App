@@ -134,9 +134,9 @@ export default function Records({ initialRecords = [] }) {
 
 export async function getServerSideProps() {
   try {
-    const { getDatabase } = require('@/lib/db');
-    const db = getDatabase();
-    const records = db.prepare('SELECT * FROM audits ORDER BY createdAt DESC').all();
+    const { initializeStorage, getAllAudits } = require('@/lib/storage');
+    initializeStorage();
+    const records = getAllAudits();
     return {
       props: {
         initialRecords: records,

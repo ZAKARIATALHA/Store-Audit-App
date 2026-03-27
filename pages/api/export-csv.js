@@ -1,4 +1,4 @@
-import { getDatabase } from '@/lib/db';
+import { initializeStorage, getAllAudits } from '@/lib/storage';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') {
@@ -6,8 +6,8 @@ export default function handler(req, res) {
   }
 
   try {
-    const db = getDatabase();
-    const rows = db.prepare('SELECT * FROM audits ORDER BY createdAt DESC').all();
+    initializeStorage();
+    const rows = getAllAudits();
 
     // Create CSV header
     const headers = ['ID', 'Store', 'SKU', 'Brand', 'Category', 'Audit Type', 'Status', 'Comments', 'Image URL', 'Created At'];
