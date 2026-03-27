@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getDatabase } from '@/lib/db';
 
 export default function Records({ initialRecords = [] }) {
   const [records, setRecords] = useState(initialRecords);
