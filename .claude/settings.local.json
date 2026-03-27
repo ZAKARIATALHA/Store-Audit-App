@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(npm --version)"
+      "Bash(npm --version)",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__deploy_to_vercel",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__list_teams",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__list_projects",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__get_project",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__get_deployment_build_logs",
+      "mcp__30e99cf8-152f-4da2-b7d1-b1eb85aebb10__list_deployments"
     ]
   }
 }
