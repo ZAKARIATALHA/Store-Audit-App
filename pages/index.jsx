@@ -66,22 +66,33 @@ export default function Home() {
     setError(null);
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('store', formData.store);
-      formDataToSend.append('sku', formData.sku);
-      formDataToSend.append('brand', formData.brand);
-      formDataToSend.append('category', formData.category);
-      formDataToSend.append('auditType', formData.auditType);
-      formDataToSend.append('status', formData.status);
-      formDataToSend.append('comments', formData.comments || '');
+      let imageData = null;
 
       if (image) {
-        formDataToSend.append('image', image);
+        // Convert image to base64
+        const reader = new FileReader();
+        imageData = await new Promise((resolve, reject) => {
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(image);
+        });
       }
 
       const response = await fetch('/api/submit-audit', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          store: formData.store,
+          sku: formData.sku,
+          brand: formData.brand,
+          category: formData.category,
+          auditType: formData.auditType,
+          status: formData.status,
+          comments: formData.comments || '',
+          imageData: imageData,
+        }),
       });
 
       const result = await response.json();
